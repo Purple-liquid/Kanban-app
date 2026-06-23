@@ -50,6 +50,7 @@ export default function Board() {
                       <span className="text-white font-semibold [writing-mode:vertical-rl] rotate-180 text-xs tracking-wider">
                         {col.title}
                       </span>
+                      <span className='text-gray-300 font-semibold [writing-mode:vertical-rl] rotate-180 text-xs tracking-wider'>{col.cards.length}</span>
                     </div>
                   ) : (
                     <>

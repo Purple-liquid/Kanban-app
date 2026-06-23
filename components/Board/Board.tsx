@@ -5,6 +5,8 @@ import { motion } from "motion/react"
 import { useState } from 'react'
 import { IoMdClose } from "react-icons/io";
 import { FaRegTrashCan } from "react-icons/fa6";
+import { BsArrowsCollapseVertical } from "react-icons/bs";
+import { TfiSplitH } from "react-icons/tfi";
 
 export default function Board() {
     const columns = useStoreAddCard(state => state.columns)
@@ -15,6 +17,7 @@ export default function Board() {
     const deleteColumn = useStoreAddCard(state => state.deleteColumn)
 
     const [isOpen, setIsOpen] = useState(false)
+    const [narrowing, setNarrowing] = useState<number[]>([])
     const [Open, setOpen] = useState<number | null>(null)
     const [newColumnTitle, setNewColumnTitle] = useState<string>("");
     const [newCardTitle, setNewCardTitle] = useState<string>("");
@@ -34,15 +37,23 @@ export default function Board() {
         <div className="flex gap-4 p-6 overflow-y-hidden overflow-x-auto h-screen items-start scrollbar-thin snap-x snap-mandatory">
             {columns?.map(col => (
             <motion.div key={col.id} data-column-id={col.id}
-              className="bg-black rounded-lg p-4 w-72 flex-shrink-0 self-start"
+              layout
+              className={`bg-black rounded-lg p-4 flex-shrink-0 self-start ${narrowing.includes(col.id) ? 'w-12 overflow-hidden' : 'w-72'}`}
               >
+              {narrowing.includes(col.id) ? (
+                <div className="flex flex-col items-center gap-3">
+                  <button onClick={() => setNarrowing(prev => prev.filter(p => p !== col.id))} className='cursor-pointer hover:bg-gray-700 p-1 rounded transition-all duration-200 text-white'><TfiSplitH /></button>
+                  <span className="text-white font-semibold [writing-mode:vertical-rl] rotate-180 text-xs">{col.title}</span>
+                </div>
+              ) : (
+              <>
               <h3 className="text-white font-semibold mb-3 flex justify-between w-full">
                 <span>{col.title}</span>
-                <div className='flex items-center gap-1'>
-                  <span>{col.cards.length}</span>
-
+                <div className='flex items-center gap-2'>
+                  <span className='pr-2'>{col.cards.length}</span>
+                  <button onClick={() => setNarrowing(prev => [...prev, col.id])} className='cursor-pointer hover:bg-gray-700 p-1 rounded transition-all duration-200 text-white'><BsArrowsCollapseVertical /></button>
                   <button 
-                  className='cursor-pointer hover:bg-gray-700 p-1 rounded transition-all duration-200'
+                    className='cursor-pointer hover:bg-gray-700 p-1 rounded transition-all duration-200 text-white'
                     onClick={() => deleteColumn(col.id)}><FaRegTrashCan /></button>
                 </div>
               </h3>
@@ -111,6 +122,8 @@ export default function Board() {
                 }} className="bg-slate-200/60 border border-slate-300/80 text-slate-800 hover:bg-slate-200/90 font-medium px-5 py-2.5 rounded-lg transition-all duration-200 shadow-sm shadow-slate-100 mt-2 px-4 py-2 rounded">Add Card</button>
               )}
               </div>
+              </>
+              )}
             </motion.div>
           ))}
           {!isOpen && (

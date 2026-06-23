@@ -1,12 +1,14 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { BoardStore } from '../types/type'
+import type { BoardStore, Narrowing } from '../types/type'
 
 export const useStoreAddCard = create<BoardStore>()(
   persist(
     (set) => (
       {
         columns: [],
+
+        narrowing: [],
 
         addCard: (columnId, card) => set((state) => ({ 
           columns: state.columns === null 
@@ -21,6 +23,20 @@ export const useStoreAddCard = create<BoardStore>()(
           ? [column]
           : [...state.columns, column]
         })),
+
+        folding: (columnId: number) => set((state) => {
+          const Nar: Narrowing[] = state.narrowing || [];
+
+          const isNarrowed = Nar.some((n) => n.id === columnId);
+          
+          const nextNarrowing: Narrowing[] = isNarrowed
+            ? Nar.filter((n) => n.id !== columnId)
+            : [...Nar, { id: columnId } as Narrowing];
+
+          return {
+            narrowing: nextNarrowing
+          };
+        }),
 
         moveCard: (cardId, fromColumnId, toColumnId) => set((state) => { 
           if (state.columns === null) return { columns: null }

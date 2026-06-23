@@ -27,7 +27,7 @@ export default function Board() {
       const titleCol = newColumnTitle.trim()
       if(!titleCol) return
 
-      addColumn({ id: Date.now(), title: newColumnTitle.trim(), cards: [] })
+      addColumn({ id: Date.now(), title: titleCol, cards: [] })
       setIsOpen(false)
       setNewColumnTitle('')
     }

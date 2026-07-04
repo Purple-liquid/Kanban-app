@@ -2,8 +2,8 @@
 
 @theme {
   --color-surface: #ffffff;
-  --color-border: #e8e8e8;
-  --color-muted: #8a8a8a;
+  --color-border: #c8c8c8;
+  --color-muted: #3d3d3d;
   --color-accent: #141414;
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), monospace;

@@ -35,9 +35,9 @@ export default function Board() {
     return (
       <div className="h-screen flex flex-col">
         <header className="flex items-center gap-3 px-8 py-5 border-b border-border shrink-0">
-          <h1 className="text-sm font-medium tracking-widest uppercase text-muted">LIQUID_KANBAN</h1>
-          <span className="text-muted text-xs">·</span>
-          <span className="text-xs text-muted tracking-wide">
+          <h1 className="text-sm font-semibold tracking-widest uppercase text-accent">LIQUID_KANBAN</h1>
+          <span className="text-muted/60 text-xs">·</span>
+          <span className="text-xs text-muted/60 tracking-wide">
             {columns?.length ?? 0} {(columns?.length ?? 0) === 1 ? 'column' : 'columns'}
           </span>
         </header>
@@ -77,17 +77,17 @@ export default function Board() {
                       >
                         <TfiSplitH size={14} />
                       </motion.button>
-                      <span className="text-muted font-medium text-[10px] tracking-widest [writing-mode:vertical-rl] rotate-180 uppercase">
+                      <span className="text-accent font-semibold text-[10px] tracking-widest [writing-mode:vertical-rl] rotate-180 uppercase">
                         {col.title}
                       </span>
-                      <span className="text-muted text-[10px] [writing-mode:vertical-rl] rotate-180">{col.cards.length}</span>
+                      <span className="text-muted/60 text-[10px] [writing-mode:vertical-rl] rotate-180">{col.cards.length}</span>
                     </div>
                   ) : (
                     <>
                       <div className="flex items-center justify-between mb-5 px-1">
                         <div className="flex items-center gap-2 min-w-0">
-                          <h3 className="text-xs font-medium tracking-wider uppercase text-muted truncate">{col.title}</h3>
-                          <span className="text-[10px] text-muted shrink-0">{col.cards.length}</span>
+                          <h3 className="text-xs font-semibold tracking-wider uppercase text-accent truncate">{col.title}</h3>
+                          <span className="text-[10px] text-muted/60 shrink-0">{col.cards.length}</span>
                         </div>
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           <motion.button
@@ -210,7 +210,7 @@ export default function Board() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             onClick={() => setOpen(col.id)}
-                            className="flex items-center gap-1.5 text-xs text-muted hover:text-muted transition-colors px-3 py-2 mt-0.5"
+                            className="flex items-center gap-1.5 text-xs text-muted hover:text-accent transition-colors px-3 py-2 mt-0.5 border border-transparent hover:border-accent/20 rounded-lg"
                           >
                             <FiPlus size={12} />
                             <span className="tracking-wide">Add card</span>
@@ -228,7 +228,7 @@ export default function Board() {
             <motion.button
               whileHover={{ borderColor: 'rgba(0,0,0,0.15)' }}
               onClick={() => setIsOpen(true)}
-              className="flex items-center gap-2 text-xs text-muted hover:text-muted transition-colors px-5 py-3 rounded-lg border border-border/40 hover:border-border/60 border-dashed shrink-0 snap-start mt-[2px]"
+              className="flex items-center gap-2 text-xs text-muted hover:text-accent transition-colors px-5 py-3 rounded-lg border border-border/40 hover:border-border/60 border-dashed shrink-0 snap-start mt-[2px]"
             >
               <FiPlus size={14} />
               <span className="tracking-wide">Add column</span>

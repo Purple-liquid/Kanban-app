@@ -2,7 +2,7 @@
 
 @theme {
   --color-surface: #ffffff;
-  --color-border: #c8c8c8;
+  --color-border: #374151;
   --color-muted: #3d3d3d;
   --color-accent: #141414;
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;

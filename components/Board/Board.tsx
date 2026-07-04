@@ -31,22 +31,20 @@ export default function Board() {
       setIsOpen(false)
       setNewColumnTitle('')
     }
-
+    
     return (
       <div className="h-screen flex flex-col">
         <header className="flex items-center gap-3 px-8 py-5 border-b border-border shrink-0">
-          <h1 className="text-sm font-semibold tracking-widest uppercase text-accent">LIQUID_KANBAN</h1>
+          <h1 className="text-sm font-semibold tracking-widest uppercase text-accent">LIQUID KANBAN</h1>
           <span className="text-muted/60 text-xs">·</span>
           <span className="text-xs text-muted/60 tracking-wide">
             {columns?.length ?? 0} {(columns?.length ?? 0) === 1 ? 'column' : 'columns'}
           </span>
         </header>
-
         <div className="flex-1 flex gap-10 p-8 overflow-x-auto items-start snap-x snap-mandatory">
           <AnimatePresence mode="popLayout">
             {columns?.map(col => {
               const isColumnNarrowed = narrowing?.some(n => n.id === col.id);
-
               return (
                 <motion.div key={col.id} data-column-id={col.id}
                   layout
@@ -54,7 +52,7 @@ export default function Board() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  className={`flex-shrink-0 self-start snap-start group ${isColumnNarrowed ? 'w-14' : 'w-64'}`}
+                  className={`flex-shrink-0 self-start p-3 rounded-lg snap-start bg-[#F7FAFA] group ${isColumnNarrowed ? 'w-14' : 'w-64'}`}
                 >
                   {isColumnNarrowed ? (
                     <div className="flex flex-col items-center gap-3 pt-6" data-column-id={col.id}>
@@ -200,7 +198,7 @@ export default function Board() {
                                 }}
                                 className="text-xs text-white bg-accent hover:bg-[#2a2a2a] px-3 py-1.5 rounded-lg transition-colors font-medium flex-1"
                               >Add</motion.button>
-                              <button onClick={() => { setOpen(null); setNewCardTitle('') }} className="text-muted hover:text-accent px-2 transition-colors">
+                              <button onClick={() => { setOpen(null); setNewCardTitle('') }} className="text-muted hover:text-accent px-2 transition-colors cursor-pointer">
                                 <IoMdClose size={14} />
                               </button>
                             </div>
@@ -226,9 +224,9 @@ export default function Board() {
 
           {!isOpen ? (
             <motion.button
-              whileHover={{ borderColor: 'rgba(0,0,0,0.15)' }}
+              whileHover={{ borderColor: 'rgba(0, 0, 0, 0.15)' }}
               onClick={() => setIsOpen(true)}
-              className="flex items-center gap-2 text-xs text-muted hover:text-accent transition-colors px-5 py-3 rounded-lg border border-border/40 hover:border-border/60 border-dashed shrink-0 snap-start mt-[2px]"
+              className="flex items-center gap-2 text-xs text-muted hover:text-accent transition-colors px-5 py-3 rounded-lg border border-border/60 hover:border-border/40 border-dashed shrink-0 snap-start mt-[2px]"
             >
               <FiPlus size={14} />
               <span className="tracking-wide">Add column</span>
@@ -254,7 +252,7 @@ export default function Board() {
                     onClick={() => hendelAddColumn()}
                     className="text-xs text-white bg-accent hover:bg-[#2a2a2a] px-3 py-1.5 rounded-lg transition-colors font-medium flex-1"
                   >Add</motion.button>
-                  <button onClick={() => { setIsOpen(false); setNewColumnTitle('') }} className="text-muted hover:text-accent px-2 transition-colors">
+                  <button onClick={() => { setIsOpen(false); setNewColumnTitle('') }} className="text-muted hover:text-accent px-2 transition-colors cursor-pointer">
                     <IoMdClose size={14} />
                   </button>
                 </div>

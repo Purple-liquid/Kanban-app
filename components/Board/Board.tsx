@@ -36,8 +36,8 @@ export default function Board() {
       <div className="h-screen flex flex-col">
         <header className="flex items-center gap-3 px-8 py-5 border-b border-border shrink-0">
           <h1 className="text-sm font-medium tracking-widest uppercase text-muted">LIQUID_KANBAN</h1>
-          <span className="text-muted/30 text-xs">·</span>
-          <span className="text-xs text-muted/50 tracking-wide">
+          <span className="text-muted text-xs">·</span>
+          <span className="text-xs text-muted tracking-wide">
             {columns?.length ?? 0} {(columns?.length ?? 0) === 1 ? 'column' : 'columns'}
           </span>
         </header>
@@ -62,7 +62,7 @@ export default function Board() {
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => deleteColumn(col.id)}
-                        className="cursor-pointer text-muted/50 hover:text-red-400/70 transition-colors p-1"
+                        className="cursor-pointer text-muted hover:text-red-400 transition-colors p-1"
                       >
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
                           <line x1="3" y1="3" x2="9" y2="9" />
@@ -80,21 +80,21 @@ export default function Board() {
                       <span className="text-muted font-medium text-[10px] tracking-widest [writing-mode:vertical-rl] rotate-180 uppercase">
                         {col.title}
                       </span>
-                      <span className="text-muted/40 text-[10px] [writing-mode:vertical-rl] rotate-180">{col.cards.length}</span>
+                      <span className="text-muted text-[10px] [writing-mode:vertical-rl] rotate-180">{col.cards.length}</span>
                     </div>
                   ) : (
                     <>
                       <div className="flex items-center justify-between mb-5 px-1">
                         <div className="flex items-center gap-2 min-w-0">
                           <h3 className="text-xs font-medium tracking-wider uppercase text-muted truncate">{col.title}</h3>
-                          <span className="text-[10px] text-muted/40 shrink-0">{col.cards.length}</span>
+                          <span className="text-[10px] text-muted shrink-0">{col.cards.length}</span>
                         </div>
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           <motion.button
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => folding(col.id)}
-                            className="cursor-pointer text-muted/50 hover:text-accent transition-colors p-1"
+                            className="cursor-pointer text-muted hover:text-accent transition-colors p-1"
                           >
                             <BsArrowsCollapseVertical size={12} />
                           </motion.button>
@@ -102,7 +102,7 @@ export default function Board() {
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => deleteColumn(col.id)}
-                            className="cursor-pointer text-muted/50 hover:text-red-400/70 transition-colors p-1"
+                            className="cursor-pointer text-muted hover:text-red-400 transition-colors p-1"
                           >
                             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
                               <line x1="3" y1="3" x2="9" y2="9" />
@@ -128,7 +128,7 @@ export default function Board() {
                                 zIndex: 50,
                                 rotate: -1,
                                 cursor: 'grabbing',
-                                boxShadow: '0 0 0 1px rgba(255,255,255,0.08)'
+                                boxShadow: '0 0 0 1px rgba(0,0,0,0.06)'
                               }}
                               onDragEnd={(_, info) => {
                                 const els = document.elementsFromPoint(info.point.x, info.point.y)
@@ -141,16 +141,16 @@ export default function Board() {
                               }}
                               className="group/card relative cursor-grab active:cursor-grabbing"
                             >
-                              <div className="px-3 py-2.5 rounded-lg bg-surface/60 border border-border hover:border-white/20 transition-colors">
+                              <div className="px-3 py-2.5 rounded-lg bg-surface border border-border hover:border-black/10 transition-colors">
                                 <div className="flex items-start justify-between gap-2">
-                                  <span className="text-sm text-accent/90 leading-relaxed min-w-0 break-words flex-1">{card.text}</span>
+                                  <span className="text-sm text-accent leading-relaxed min-w-0 break-words flex-1">{card.text}</span>
                                   <motion.button
                                     initial={{ opacity: 0 }}
                                     whileInView={{ opacity: 1 }}
                                     whileHover={{ scale: 1.1 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={() => deleteCard(col.id, card.id)}
-                                    className="opacity-0 group-hover/card:opacity-100 cursor-pointer text-muted/30 hover:text-red-400/60 transition-all p-0.5 shrink-0 mt-0.5"
+                                    className="opacity-0 group-hover/card:opacity-100 cursor-pointer text-muted hover:text-red-400 transition-all p-0.5 shrink-0 mt-0.5"
                                   >
                                     <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5">
                                       <line x1="2" y1="2" x2="8" y2="8" />
@@ -185,7 +185,7 @@ export default function Board() {
                                 }
                               }}
                               onChange={e => setNewCardTitle(e.target.value)}
-                              className="text-sm text-accent placeholder-muted/40 px-3 py-2 rounded-lg bg-surface/40 border border-border/60 focus:border-accent/30 focus:outline-none transition-colors"
+                              className="text-sm text-accent placeholder:text-muted px-3 py-2 rounded-lg bg-[#f3f3f3] border border-border/60 focus:border-accent/30 focus:outline-none transition-colors"
                               autoFocus
                             />
                             <div className="flex gap-1.5">
@@ -198,9 +198,9 @@ export default function Board() {
                                     setNewCardTitle('')
                                   }
                                 }}
-                                className="text-xs text-dark bg-accent hover:bg-white px-3 py-1.5 rounded-lg transition-colors font-medium flex-1"
+                                className="text-xs text-white bg-accent hover:bg-[#2a2a2a] px-3 py-1.5 rounded-lg transition-colors font-medium flex-1"
                               >Add</motion.button>
-                              <button onClick={() => { setOpen(null); setNewCardTitle('') }} className="text-muted/50 hover:text-accent px-2 transition-colors">
+                              <button onClick={() => { setOpen(null); setNewCardTitle('') }} className="text-muted hover:text-accent px-2 transition-colors">
                                 <IoMdClose size={14} />
                               </button>
                             </div>
@@ -210,7 +210,7 @@ export default function Board() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             onClick={() => setOpen(col.id)}
-                            className="flex items-center gap-1.5 text-xs text-muted/40 hover:text-muted transition-colors px-3 py-2 mt-0.5"
+                            className="flex items-center gap-1.5 text-xs text-muted hover:text-muted transition-colors px-3 py-2 mt-0.5"
                           >
                             <FiPlus size={12} />
                             <span className="tracking-wide">Add card</span>
@@ -226,9 +226,9 @@ export default function Board() {
 
           {!isOpen ? (
             <motion.button
-              whileHover={{ borderColor: 'rgba(255,255,255,0.15)' }}
+              whileHover={{ borderColor: 'rgba(0,0,0,0.15)' }}
               onClick={() => setIsOpen(true)}
-              className="flex items-center gap-2 text-xs text-muted/40 hover:text-muted transition-colors px-5 py-3 rounded-lg border border-border/40 hover:border-border/60 border-dashed shrink-0 snap-start mt-[2px]"
+              className="flex items-center gap-2 text-xs text-muted hover:text-muted transition-colors px-5 py-3 rounded-lg border border-border/40 hover:border-border/60 border-dashed shrink-0 snap-start mt-[2px]"
             >
               <FiPlus size={14} />
               <span className="tracking-wide">Add column</span>
@@ -245,16 +245,16 @@ export default function Board() {
                   placeholder="Column title..."
                   onKeyDown={(e) => { if(e.code === 'Enter') hendelAddColumn(); if(e.code === 'Escape') { setIsOpen(false); setNewColumnTitle('') } }}
                   onChange={e => setNewColumnTitle(e.target.value)}
-                  className="text-sm text-accent placeholder-muted/40 px-3 py-2 rounded-lg bg-surface/40 border border-border/60 focus:border-accent/30 focus:outline-none transition-colors"
+                  className="text-sm text-accent placeholder:text-muted px-3 py-2 rounded-lg bg-[#f3f3f3] border border-border/60 focus:border-accent/30 focus:outline-none transition-colors"
                   autoFocus
                 />
                 <div className="flex gap-1.5">
                   <motion.button
                     whileTap={{ scale: 0.97 }}
                     onClick={() => hendelAddColumn()}
-                    className="text-xs text-dark bg-accent hover:bg-white px-3 py-1.5 rounded-lg transition-colors font-medium flex-1"
+                    className="text-xs text-white bg-accent hover:bg-[#2a2a2a] px-3 py-1.5 rounded-lg transition-colors font-medium flex-1"
                   >Add</motion.button>
-                  <button onClick={() => { setIsOpen(false); setNewColumnTitle('') }} className="text-muted/50 hover:text-accent px-2 transition-colors">
+                  <button onClick={() => { setIsOpen(false); setNewColumnTitle('') }} className="text-muted hover:text-accent px-2 transition-colors">
                     <IoMdClose size={14} />
                   </button>
                 </div>

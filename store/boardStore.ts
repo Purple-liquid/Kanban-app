@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { BoardStore, Narrowing } from '../types/type'
 
-export const useStoreAddCard = create<BoardStore>()(
+export const useBoardStore = create<BoardStore>()(
   persist(
     (set) => (
       {
@@ -78,6 +78,16 @@ export const useStoreAddCard = create<BoardStore>()(
           ? null
           : state.columns.filter(col => col.id !== columnId)
         })),
+
+        prioritySelection: (columnId, priority) => set((state) => ({
+          columns: state.columns === null
+          ? null
+          : state.columns.map((col) => 
+            col.id === columnId 
+              ? { ...col, priority: priority || 'Low' } 
+              : col
+          )
+        }))
 }),
 {
   name: 'save-kanban-columns'

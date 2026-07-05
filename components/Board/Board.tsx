@@ -1,6 +1,7 @@
 'use client';
 
-import { useStoreAddCard } from '../../store/boardStore'
+import type { PriorityLevel } from '../../types/type'
+import { useBoardStore } from '../../store/boardStore'
 import { motion, AnimatePresence } from "motion/react"
 import { useState } from 'react'
 import { IoMdClose } from "react-icons/io";
@@ -9,27 +10,39 @@ import { BsArrowsCollapseVertical } from "react-icons/bs";
 import { TfiSplitH } from "react-icons/tfi";
 
 export default function Board() {
-    const columns = useStoreAddCard(state => state.columns)
-    const narrowing = useStoreAddCard(state => state.narrowing)
-    const addCard = useStoreAddCard(state => state.addCard)
-    const addColumn = useStoreAddCard(state => state.addColumn)
-    const folding = useStoreAddCard(state => state.folding)
-    const moveCard = useStoreAddCard(state => state.moveCard)
-    const deleteCard = useStoreAddCard(state => state.deleteCard)
-    const deleteColumn = useStoreAddCard(state => state.deleteColumn)
+    const columns = useBoardStore(state => state.columns)
+    const narrowing = useBoardStore(state => state.narrowing)
+    const addCard = useBoardStore(state => state.addCard)
+    const addColumn = useBoardStore(state => state.addColumn)
+    const folding = useBoardStore(state => state.folding)
+    const moveCard = useBoardStore(state => state.moveCard)
+    const deleteCard = useBoardStore(state => state.deleteCard)
+    const deleteColumn = useBoardStore(state => state.deleteColumn)
+    const prioritySelection = useBoardStore(state => state.prioritySelection)
     
     const [isOpen, setIsOpen] = useState(false)
     const [Open, setOpen] = useState<number | null>(null)
     const [newColumnTitle, setNewColumnTitle] = useState<string>("");
     const [newCardTitle, setNewCardTitle] = useState<string>("");
+    
+    const [newColumnPriority, setNewColumnPriority] = useState<PriorityLevel>('Low');
 
     const hendelAddColumn = () => {
       const titleCol = newColumnTitle.trim()
       if(!titleCol) return
 
-      addColumn({ id: Date.now(), title: titleCol, cards: [] })
+      addColumn({ id: Date.now(), title: titleCol, cards: [], priority: newColumnPriority })
       setIsOpen(false)
       setNewColumnTitle('')
+      setNewColumnPriority('Low')
+    }
+
+    const repaint = (priority: 'Low' | 'Medium' | 'High' | undefined | null) => {
+      if (priority === "Low") return "bg-emerald-500"
+      if (priority === "Medium") return "bg-amber-500"
+      if (priority === "High") return "bg-rose-500"
+      
+      return "bg-emerald-500" 
     }
     
     return (
@@ -55,7 +68,8 @@ export default function Board() {
                   className={`flex-shrink-0 self-start p-3 rounded-lg snap-start bg-[#F7FAFA] group ${isColumnNarrowed ? 'w-14' : 'w-64'}`}
                 >
                   {isColumnNarrowed ? (
-                    <div className="flex flex-col items-center gap-3 pt-6" data-column-id={col.id}>
+                    <div className="flex flex-col items-center gap-3 pt-1" data-column-id={col.id}>
+                      <div className={`w-10 h-1 transition-colors  ${repaint(col.priority)} rounded-full shrink-0 `} />
                       <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
@@ -82,138 +96,174 @@ export default function Board() {
                     </div>
                   ) : (
                     <>
-                      <div className="flex items-center justify-between mb-5 px-1">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <h3 className="text-xs font-semibold tracking-wider uppercase text-accent truncate">{col.title}</h3>
-                          <span className="text-[10px] text-muted/60 shrink-0">{col.cards.length}</span>
-                        </div>
-                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => folding(col.id)}
-                            className="cursor-pointer text-muted hover:text-accent transition-colors p-1"
-                          >
-                            <BsArrowsCollapseVertical size={12} />
-                          </motion.button>
-                          <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => deleteColumn(col.id)}
-                            className="cursor-pointer text-muted hover:text-red-400 transition-colors p-1"
-                          >
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
-                              <line x1="3" y1="3" x2="9" y2="9" />
-                              <line x1="9" y1="3" x2="3" y2="9" />
-                            </svg>
-                          </motion.button>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col gap-1.5" data-column-id={col.id}>
-                        <AnimatePresence mode="popLayout">
-                          {col.cards.map((card) => (
-                            <motion.div key={card.id} layoutId={String(card.id)}
-                              layout
-                              initial={{ opacity: 0, y: -8 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.15 } }}
-                              drag
-                              dragSnapToOrigin
-                              dragElastic={0.3}
-                              whileDrag={{
-                                scale: 1.02,
-                                zIndex: 50,
-                                rotate: -1,
-                                cursor: 'grabbing',
-                                boxShadow: '0 0 0 1px rgba(0,0,0,0.06)'
-                              }}
-                              onDragEnd={(_, info) => {
-                                const els = document.elementsFromPoint(info.point.x, info.point.y)
-                                const targetCol = els.find(el => el instanceof HTMLElement && el.dataset.columnId)
-                                if(!targetCol) return
-                                const toColumnId = Number((targetCol as HTMLElement).dataset.columnId)
-                                if(toColumnId && toColumnId !== col.id) {
-                                  moveCard(card.id, col.id, toColumnId)
-                                }
-                              }}
-                              className="group/card relative cursor-grab active:cursor-grabbing"
-                            >
-                              <div className="px-3 py-2.5 rounded-lg bg-surface border border-border hover:border-black/10 transition-colors">
-                                <div className="flex items-start justify-between gap-2">
-                                  <span className="text-sm text-accent leading-relaxed min-w-0 break-words flex-1">{card.text}</span>
-                                  <motion.button
-                                    initial={{ opacity: 0 }}
-                                    whileInView={{ opacity: 1 }}
-                                    whileHover={{ scale: 1.1 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={() => deleteCard(col.id, card.id)}
-                                    className="opacity-0 group-hover/card:opacity-100 cursor-pointer text-muted hover:text-red-400 transition-all p-0.5 shrink-0 mt-0.5"
-                                  >
-                                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                      <line x1="2" y1="2" x2="8" y2="8" />
-                                      <line x1="8" y1="2" x2="2" y2="8" />
-                                    </svg>
-                                  </motion.button>
-                                </div>
-                              </div>
-                            </motion.div>
-                          ))}
-                        </AnimatePresence>
-
-                        {Open === col.id ? (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className="flex flex-col gap-2 mt-1"
-                          >
-                            <input
-                              value={newCardTitle}
-                              placeholder="Card title..."
-                              onKeyDown={(e) => {
-                                if(e.code === "Enter" && newCardTitle.trim()) {
-                                  addCard(col.id, { id: Date.now(), text: newCardTitle.trim() })
-                                  setOpen(null)
-                                  setNewCardTitle('')
-                                }
-                                if(e.code === "Escape") {
-                                  setOpen(null)
-                                  setNewCardTitle('')
-                                }
-                              }}
-                              onChange={e => setNewCardTitle(e.target.value)}
-                              className="text-sm text-accent placeholder:text-muted px-3 py-2 rounded-lg bg-[#f3f3f3] border border-border/60 focus:border-accent/30 focus:outline-none transition-colors"
-                              autoFocus
-                            />
-                            <div className="flex gap-1.5">
-                              <motion.button
-                                whileTap={{ scale: 0.97 }}
-                                onClick={() => {
-                                  if(newCardTitle.trim()) {
-                                    addCard(col.id, { id: Date.now(), text: newCardTitle.trim() })
-                                    setOpen(null)
-                                    setNewCardTitle('')
-                                  }
-                                }}
-                                className="text-xs text-white bg-accent hover:bg-[#2a2a2a] px-3 py-1.5 rounded-lg transition-colors font-medium flex-1"
-                              >Add</motion.button>
-                              <button onClick={() => { setOpen(null); setNewCardTitle('') }} className="text-muted hover:text-accent px-2 transition-colors cursor-pointer">
-                                <IoMdClose size={14} />
-                              </button>
+                      <div className="flex items-start justify-between gap-3"> 
+                        {/* Наша статичная вертикальная полоска сверху */}
+                        <div className={`w-1 h-10 transition-colors ${repaint(col.priority)} rounded-full shrink-0 mt-1`} />
+                        
+                        <div className="self-start rounded-lg snap-start bg-[#F7FAFA] group flex-1">
+                          <div className="flex items-center justify-between mb-3 px-1">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <h3 className="text-xs font-semibold tracking-wider uppercase text-accent truncate">{col.title}</h3>
+                              <span className="text-[10px] text-muted/60 shrink-0">{col.cards.length}</span>
                             </div>
-                          </motion.div>
-                        ) : (
-                          <motion.button
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            onClick={() => setOpen(col.id)}
-                            className="flex items-center gap-1.5 text-xs text-muted hover:text-accent transition-colors px-3 py-2 mt-0.5 border border-transparent hover:border-accent/20 rounded-lg"
-                          >
-                            <FiPlus size={12} />
-                            <span className="tracking-wide">Add card</span>
-                          </motion.button>
-                        )}
+                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <motion.button
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => folding(col.id)}
+                                className="cursor-pointer text-muted hover:text-accent transition-colors p-1"
+                              >
+                                <BsArrowsCollapseVertical size={12} />
+                              </motion.button>
+                              <motion.button
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => deleteColumn(col.id)}
+                                className="cursor-pointer text-muted hover:text-red-400 transition-colors p-1"
+                              >
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                  <line x1="3" y1="3" x2="9" y2="9" />
+                                  <line x1="9" y1="3" x2="3" y2="9" />
+                                </svg>
+                              </motion.button>
+                            </div>
+                          </div>
+
+                          <div className="flex gap-1 mb-4 px-1">
+                            {['Low', 'Medium', 'High'].map((level) => {
+                              const checkedColors = {
+                                Low: 'peer-checked:bg-emerald-500',
+                                Medium: 'peer-checked:bg-amber-500',
+                                High: 'peer-checked:bg-rose-500'
+                              };
+
+                              return (
+                                <label key={level} className="relative">
+                                  <input 
+                                    type="radio" 
+                                    name={`priority-${col.id}`} 
+                                    value={level} 
+                                    className="sr-only peer" 
+                                    checked={col.priority === level}
+                                    onChange={() => prioritySelection(col.id, level as PriorityLevel)}
+                                  />
+                                  <span className={`px-2 py-0.5 rounded text-[9px] font-medium cursor-pointer transition-all bg-gray-100 text-gray-500 hover:bg-gray-200 peer-checked:text-white ${checkedColors[level as keyof typeof checkedColors]}`}>
+                                    {level}
+                                  </span>
+                                </label>
+                              );
+                            })}
+                          </div>
+
+                          <div className="flex flex-col gap-1.5" data-column-id={col.id}>
+                            <AnimatePresence mode="popLayout">
+                              {col.cards.map((card) => (
+                                <motion.div key={card.id} layoutId={String(card.id)}
+                                  layout
+                                  initial={{ opacity: 0, y: -8 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.15 } }}
+                                  drag
+                                  dragSnapToOrigin
+                                  dragElastic={0.3}
+                                  whileDrag={{
+                                    scale: 1.02,
+                                    zIndex: 50,
+                                    rotate: -1,
+                                    cursor: 'grabbing',
+                                    boxShadow: '0 0 0 1px rgba(0,0,0,0.06)'
+                                  }}
+                                  onDragEnd={(_, info) => {
+                                    const els = document.elementsFromPoint(info.point.x, info.point.y)
+                                    const targetCol = els.find(el => el instanceof HTMLElement && el.dataset.columnId)
+                                    if(!targetCol) return
+                                    const toColumnId = Number((targetCol as HTMLElement).dataset.columnId)
+                                    if(toColumnId && toColumnId !== col.id) {
+                                      moveCard(card.id, col.id, toColumnId)
+                                    }
+                                  }}
+                                  className="group/card relative cursor-grab active:cursor-grabbing"
+                                >
+                                  <div className="px-3 py-2.5 rounded-lg bg-surface border border-border hover:border-black/10 transition-colors">
+                                    <div className="flex items-start justify-between gap-2">
+                                      <span className="text-sm text-accent leading-relaxed min-w-0 break-words flex-1">{card.text}</span>
+                                      <motion.button
+                                        initial={{ opacity: 0 }}
+                                        whileInView={{ opacity: 1 }}
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={() => deleteCard(col.id, card.id)}
+                                        className="opacity-0 group-hover/card:opacity-100 cursor-pointer text-muted hover:text-red-400 transition-all p-0.5 shrink-0 mt-0.5"
+                                      >
+                                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                          <line x1="2" y1="2" x2="8" y2="8" />
+                                          <line x1="8" y1="2" x2="2" y2="8" />
+                                        </svg>
+                                      </motion.button>
+                                    </div>
+                                  </div>
+                                </motion.div>
+                              ))}
+                            </AnimatePresence>
+
+                            {Open === col.id ? (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className="flex flex-col gap-2 mt-1"
+                              >
+                                <input
+                                  value={newCardTitle}
+                                  placeholder="Card title..."
+                                  autoFocus
+                                  onKeyDown={(e) => {
+                                    if(e.code === "Enter" && newCardTitle.trim()) {
+                                      addCard(col.id, { id: Date.now(), text: newCardTitle.trim() })
+                                      setOpen(null)
+                                      setNewCardTitle('')
+                                    }
+                                    if(e.code === "Escape") {
+                                      setOpen(null)
+                                      setNewCardTitle('')
+                                    }
+                                  }}
+                                  onChange={e => setNewCardTitle(e.target.value)}
+                                  className="text-sm text-accent placeholder:text-muted px-3 py-2 rounded-lg bg-[#f3f3f3] border border-border/60 focus:border-accent/30 focus:outline-none transition-colors"
+                                />
+                                <div className="flex gap-1.5">
+                                  <motion.button
+                                    whileTap={{ scale: 0.97 }}
+                                    onClick={() => {
+                                      if(newCardTitle.trim()) {
+                                        addCard(col.id, { id: Date.now(), text: newCardTitle.trim() })
+                                        setOpen(null)
+                                        setNewCardTitle('')
+                                      }
+                                    }}
+                                    className="text-xs text-white bg-accent hover:bg-[#2a2a2a] px-3 py-1.5 rounded-lg transition-colors font-medium flex-1 cursor-pointer"
+                                  >Add</motion.button>
+                                  <button 
+                                    onClick={() => { setOpen(null); setNewCardTitle('') }} 
+                                    className="text-muted hover:text-accent px-2 transition-colors cursor-pointer"
+                                  >
+                                    <IoMdClose size={14} />
+                                  </button>
+                                </div>
+                              </motion.div>
+                            ) : (
+                              <motion.button
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                onClick={() => setOpen(col.id)}
+                                className="flex items-center gap-1.5 text-xs text-muted hover:text-accent transition-colors px-3 py-2 mt-0.5 border border-transparent hover:border-accent/20 rounded-lg"
+                              >
+                                <FiPlus size={12} />
+                                <span className="tracking-wide">Add card</span>
+                              </motion.button>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </>
                   )}
@@ -241,26 +291,58 @@ export default function Board() {
                 <input
                   value={newColumnTitle}
                   placeholder="Column title..."
-                  onKeyDown={(e) => { if(e.code === 'Enter') hendelAddColumn(); if(e.code === 'Escape') { setIsOpen(false); setNewColumnTitle('') } }}
+                  onKeyDown={(e) => { 
+                    if(e.code === 'Enter') hendelAddColumn(); 
+                    if(e.code === 'Escape') { setIsOpen(false); setNewColumnTitle(''); setNewColumnPriority('Low'); } 
+                  }}
                   onChange={e => setNewColumnTitle(e.target.value)}
                   className="text-sm text-accent placeholder:text-muted px-3 py-2 rounded-lg bg-[#f3f3f3] border border-border/60 focus:border-accent/30 focus:outline-none transition-colors"
                   autoFocus
                 />
-                <div className="flex gap-1.5">
-                  <motion.button
-                    whileTap={{ scale: 0.97 }}
-                    onClick={() => hendelAddColumn()}
-                    className="text-xs text-white bg-accent hover:bg-[#2a2a2a] px-3 py-1.5 rounded-lg transition-colors font-medium flex-1"
-                  >Add</motion.button>
-                  <button onClick={() => { setIsOpen(false); setNewColumnTitle('') }} className="text-muted hover:text-accent px-2 transition-colors cursor-pointer">
-                    <IoMdClose size={14} />
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          )}
+                <div className="flex flex-col gap-2 p-1.5 rounded-lg">
+                  <div className="flex gap-1">
+                    {['Low', 'Medium', 'High'].map((level) => {
+                      const checkedColors = {
+                        Low: 'peer-checked:bg-emerald-500',
+                        Medium: 'peer-checked:bg-amber-500',
+                        High: 'peer-checked:bg-rose-500'
+                      };
+
+                      return (
+                        <label key={level} className="relative flex-1 text-center">
+                          <input 
+                            type="radio" 
+                            name="new-column-priority" 
+                            value={level} 
+                            className="sr-only peer" 
+                            checked={newColumnPriority === level}
+                            onChange={() => setNewColumnPriority(level as PriorityLevel)}
+                          />
+                          <span className={`block px-1 py-1 rounded text-[10px] font-medium cursor-pointer transition-all bg-gray-100 text-gray-600 hover:bg-gray-200 peer-checked:text-white ${checkedColors[level as keyof typeof checkedColors]}`}>
+                            {level}
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                  <div className="flex gap-1.5 mt-1 pt-1.5">
+                    <motion.button
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => hendelAddColumn()}
+                      className="text-xs text-white bg-accent hover:bg-[#2a2a2a] px-3 py-1.5 rounded-lg transition-colors font-medium flex-1 cursor-pointer"
+                    >Add</motion.button>
+                    <button 
+                      onClick={() => { setIsOpen(false); setNewColumnTitle(''); setNewColumnPriority('Low'); }} 
+                      className="text-muted hover:text-accent px-2 transition-colors cursor-pointer"
+                    >
+                      <IoMdClose size={14} />
+                    </button>
+                    </div>
+                    </div>
+                    </div>
+                  </motion.div>
+                  )}
         </div>
       </div>
-    )
-}
-
+    );
+  }

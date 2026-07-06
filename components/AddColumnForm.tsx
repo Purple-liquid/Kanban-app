@@ -45,6 +45,7 @@ export default function AddColumnForm() {
                         <input
                             value={newColumnTitle}
                             placeholder="Column title..."
+                            maxLength={15}
                             onKeyDown={(e) => { 
                                 if(e.code === 'Enter') hendelAddColumn();
                             }}

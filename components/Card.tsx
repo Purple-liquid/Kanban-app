@@ -44,7 +44,7 @@ export default function Card({ columnId } : CardId) {
         >
           <div className="px-3 py-2.5 rounded-lg bg-surface border border-border hover:border-black/10 transition-colors">
             <div className="flex items-start justify-between gap-2">
-              <span className="text-sm text-accent leading-relaxed min-w-0 break-words flex-1">{card.text}</span>
+              <span className="text-sm text-accent leading-relaxed min-w-0 break-all flex-1">{card.text}</span>
               <motion.button
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}

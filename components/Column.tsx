@@ -132,6 +132,7 @@ export default function Column() {
                                 <div className="flex items-center gap-2 w-full">
                                     <input 
                                         value={newToggle}
+                                        maxLength={15}
                                         onKeyDown={(e) => {
                                             if(e.code === 'Enter') {
                                                 hendelEditingColumn()

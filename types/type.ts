@@ -1,14 +1,17 @@
-interface CardType {
+export interface CardType {
     id: number
     text: string
 }
 
-interface ColumnType {
+export interface ColumnType {
     id: number
-    title: string
+    title: Title
     cards: CardType[]
     priority: PriorityLevel
+    editingColumn?: boolean;
 }
+
+export type Title = string
 
 export interface Narrowing {
     id: number
@@ -21,6 +24,7 @@ export type PriorityLevel = 'Low' | 'Medium' | 'High'
 export interface BoardStore {
     columns: ColumnType[] | null
     narrowing: Narrowing[] | null
+    newColumnPriority: PriorityLevel
     addCard: (column: number, card: CardType) => void
     addColumn: (column: ColumnType) => void
     folding: (columnId: number) => void
@@ -28,4 +32,7 @@ export interface BoardStore {
     deleteCard: (columnId: number, cardId: number) => void
     deleteColumn: (columnId: number) => void
     prioritySelection: (columnId: number, priority: PriorityLevel) => void
+    setNewColumnPriority: (priority: PriorityLevel) => void
+    setEditingColumn: (columnId: number, t: Title) => void
+    setAddEditingColumn: (columnId: number, x: boolean) => void
 }

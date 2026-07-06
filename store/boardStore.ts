@@ -10,6 +10,10 @@ export const useBoardStore = create<BoardStore>()(
 
         narrowing: [],
 
+        newColumnPriority: 'Low',
+
+        editingColumn: false,
+
         addCard: (columnId, card) => set((state) => ({ 
           columns: state.columns === null 
             ? null 
@@ -87,7 +91,25 @@ export const useBoardStore = create<BoardStore>()(
               ? { ...col, priority: priority || 'Low' } 
               : col
           )
-        }))
+        })),
+
+        setNewColumnPriority: (priority) => set({ newColumnPriority: priority}),
+        
+        
+        setEditingColumn: (columnId, t) => set((state) => ({
+          columns: state.columns?.map((col) => 
+            col.id === columnId ? { ...col, title: t } : col
+          ) ?? null
+        })),
+
+        setAddEditingColumn: (columnId, x) => set((state) => ({
+          columns: state.columns === null
+          ? null
+          : state.columns.map((col) => 
+            col.id === columnId 
+              ? { ...col, editingColumn: x }
+          : col
+        )})),
 }),
 {
   name: 'save-kanban-columns'

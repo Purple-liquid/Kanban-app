@@ -125,19 +125,32 @@ export default function Column() {
                                 </div>
                             </div>
                           ) : (
-                            <div className="flex flex-col gap-4 items-center justify-between mb-3 px-1">
-                                <input 
-                                    value={newToggle}
-                                    onKeyDown={(e) => {
-                                        if(e.code === 'Enter') {
-                                            hendelEditingColumn()
-                                            setAddEditingColumn(col.id, false)
-                                        };
-                                    }}
-                                    onChange={e => setNewToggle(e.target.value)}
-                                    className="text-sm text-accent placeholder:text-muted px-3 py-2 rounded-lg bg-[#f3f3f3] border border-border/60 focus:border-accent/30 focus:outline-none transition-colors"
-                                    autoFocus
-                                 />
+                            <div className="flex flex-col gap-4 items-center mb-3 px-1">
+                                <div className="flex items-center gap-2 w-full">
+                                    <input 
+                                        value={newToggle}
+                                        onKeyDown={(e) => {
+                                            if(e.code === 'Enter') {
+                                                hendelEditingColumn()
+                                                setAddEditingColumn(col.id, false)
+                                            };
+                                        }}
+                                        onChange={e => setNewToggle(e.target.value)}
+                                        className="w-[175px] text-sm text-accent placeholder:text-muted px-3 py-2 rounded-lg bg-[#f3f3f3] border border-border/60 focus:border-accent/30 focus:outline-none transition-colors"
+                                        autoFocus
+                                     />
+                                    <motion.button
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={() => setAddEditingColumn(col.id, false)}
+                                        className="cursor-pointer text-muted hover:text-red-400 transition-colors p-1"
+                                    >
+                                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                            <line x1="3" y1="3" x2="9" y2="9" />
+                                            <line x1="9" y1="3" x2="3" y2="9" />
+                                        </svg>
+                                    </motion.button>
+                                </div>
                                 <PriorityPills value={col.priority} onChange={(level) => prioritySelection(col.id, level)} name="editing-column-priority" />
                             </div>
                           )}

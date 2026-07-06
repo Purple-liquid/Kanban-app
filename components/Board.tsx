@@ -4,8 +4,6 @@ import Column from "./Column";
 import AddColumnForm from "./AddColumnForm";
 import { useBoardStore } from '../store/boardStore'
 
-
-
 export default function Board() {
     const columns = useBoardStore(state => state.columns)
     

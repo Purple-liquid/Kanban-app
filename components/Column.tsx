@@ -87,7 +87,7 @@ export default function Column() {
                     <>
                       <div className="flex items-start justify-between gap-3"> 
                         <div className={`w-1 h-10 transition-colors ${repaint(col.priority)} rounded-full shrink-0 mt-1`} />
-                        <div className="self-start rounded-lg snap-start bg-[#F7FAFA] group flex-1">
+                        <div className="self-start rounded-lg snap-start bg-[#F7FAFA] group flex-1 min-w-0">
                           {!isCurrentColumnEditing ? (
                             <div className="flex items-center justify-between mb-3 px-1">
                                 <div className="flex items-center gap-2 min-w-0">

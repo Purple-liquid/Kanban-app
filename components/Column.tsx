@@ -54,7 +54,7 @@ export default function Column() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  className={`flex-shrink-0 w-auto self-start p-3 rounded-lg snap-start bg-[#F7FAFA] group ${isColumnNarrowed ? 'w-14' : 'w-64'}`}
+                  className={`flex-shrink-0 self-start p-3 rounded-lg snap-start bg-[#F7FAFA] group ${isColumnNarrowed ? 'w-14' : 'w-64'}`}
                 >
                   {isColumnNarrowed ? (
                     <div className="flex flex-col items-center gap-3 pt-1" data-column-id={col.id}>

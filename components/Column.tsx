@@ -105,7 +105,10 @@ export default function Column() {
                                     </motion.button>
                                 
                                     <motion.button
-                                        onClick={() => setAddEditingColumn(col.id, !isCurrentColumnEditing)}
+                                        onClick={() => {
+                                          setNewToggle(col.title);
+                                          setAddEditingColumn(col.id, !isCurrentColumnEditing)
+                                        }}
                                         className="cursor-pointer text-muted hover:text-accent transition-colors p-1"
                                     >
                                         <CiEdit />

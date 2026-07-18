@@ -18,7 +18,7 @@ export default function AddColumnForm() {
       const titleCol = newColumnTitle.trim()
       if(!titleCol) return
 
-      addColumn({ id: Date.now(), title: titleCol, cards: [], priority: newColumnPriority })
+      addColumn({ id: crypto.randomUUID(), title: titleCol, cards: [], priority: newColumnPriority })
       setIsOpen(false)
       setNewColumnTitle('')
       setNewColumnPriority('Low')

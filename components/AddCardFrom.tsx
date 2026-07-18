@@ -32,7 +32,7 @@ export default function AddCardFrom({ columnId } :AddCardId) {
                       autoFocus
                       onKeyDown={(e) => {
                         if(e.code === "Enter" && newCardTitle.trim()) {
-                          addCard(column?.id, { id: Date.now(), text: newCardTitle.trim() })
+                          addCard(column?.id, { id: crypto.randomUUID(), text: newCardTitle.trim() })
                           setOpen(null)
                           setNewCardTitle('')
                         }
@@ -49,7 +49,7 @@ export default function AddCardFrom({ columnId } :AddCardId) {
                         whileTap={{ scale: 0.97 }}
                         onClick={() => {
                           if(newCardTitle.trim()) {
-                            addCard(column?.id, { id: Date.now(), text: newCardTitle.trim() })
+                            addCard(column?.id, { id: crypto.randomUUID(), text: newCardTitle.trim() })
                             setOpen(null)
                             setNewCardTitle('')
                           }
